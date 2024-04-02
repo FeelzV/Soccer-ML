@@ -109,6 +109,13 @@ class PPOTrainer(OnPolicyTrainer):
         self.collected_rewards["environment"][agent_id] += np.sum(
             agent_buffer_trajectory[BufferKey.ENVIRONMENT_REWARDS]
         )
+        def normalize_reward(self, reward):
+            reward_mean = np.mean(self.collected_rewards[name][agent_id])
+            reward_std = np.std(self.collected_rewards[name][agent_id])
+
+            reward_normalized = (reward - reward_mean) / reward_std + 1e-10
+            return reward_normalized
+        
         for name, reward_signal in self.optimizer.reward_signals.items():
             evaluate_result = (
                 reward_signal.evaluate(agent_buffer_trajectory) * reward_signal.strength
@@ -117,7 +124,9 @@ class PPOTrainer(OnPolicyTrainer):
                 evaluate_result
             )
             # Report the reward signals
-            self.collected_rewards[name][agent_id] += np.sum(evaluate_result)
+            self.collected_rewards[name][agent_id] += normalize_reward(self, np.sum(evaluate_result))
+        
+       
 
         # Compute GAE and returns
         tmp_advantages = []
