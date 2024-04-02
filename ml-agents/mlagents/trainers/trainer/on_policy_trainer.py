@@ -129,6 +129,8 @@ class OnPolicyTrainer(RLTrainer):
                     self.__class__.__name__
                 )
             )
+        logger.error("Generating policy for {}.".format(parsed_behavior_id.behavior_id))
+
         self.policy = policy
         self.policies[parsed_behavior_id.behavior_id] = policy
 

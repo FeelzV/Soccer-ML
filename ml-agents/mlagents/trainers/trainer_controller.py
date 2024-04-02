@@ -2,12 +2,15 @@
 # ## ML-Agent Learning
 """Launches trainers for each External Brains in a Unity Environment."""
 
+import mlagents_envs
 import os
 import threading
 from typing import Dict, Set, List
 from collections import defaultdict
-
+from mlagents_envs import logging_util
 import numpy as np
+
+logger = logging_util.get_logger(__name__)
 
 from mlagents_envs.logging_util import get_logger
 from mlagents.trainers.env_manager import EnvManager, EnvironmentStep
@@ -115,7 +118,6 @@ class TrainerController:
     def _create_trainer_and_manager(
         self, env_manager: EnvManager, name_behavior_id: str
     ) -> None:
-
         parsed_behavior_id = BehaviorIdentifiers.from_name_behavior_id(name_behavior_id)
         brain_name = parsed_behavior_id.brain_name
         trainerthread = None

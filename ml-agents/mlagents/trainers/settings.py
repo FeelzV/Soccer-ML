@@ -262,7 +262,7 @@ class ParameterRandomizationType(Enum):
             ParameterRandomizationType.UNIFORM: UniformSettings,
             ParameterRandomizationType.GAUSSIAN: GaussianSettings,
             ParameterRandomizationType.MULTIRANGEUNIFORM: MultiRangeUniformSettings,
-            ParameterRandomizationType.CONSTANT: ConstantSettings
+            ParameterRandomizationType.CONSTANT: ConstantSettings,
             # Constant type is handled if a float is provided instead of a config
         }
         return _mapping[self]
@@ -691,6 +691,7 @@ class TrainerSettings(ExportableSettings):
             d_copy.pop("framework", None)
 
         for key, val in d_copy.items():
+
             if attr.has(type(val)):
                 # Don't convert already-converted attrs classes.
                 continue
@@ -718,7 +719,9 @@ class TrainerSettings(ExportableSettings):
             #     if val:
             #         d_copy["checkpoint_interval"] = int(d_copy["max_steps"] / d_copy["keep_checkpoints"])
             elif key == "trainer_type":
+
                 if val not in all_trainer_types.keys():
+                    print(all_trainer_types.keys())
                     raise TrainerConfigError(f"Invalid trainer type {val} was found")
             else:
                 d_copy[key] = check_and_structure(key, val, t)
@@ -955,9 +958,9 @@ class RunOptions(ExportableSettings):
         # Prioritize the deterministic mode from the cli for deterministic actions.
         if "deterministic" in _non_default_args:
             for behaviour in final_runoptions.behaviors.keys():
-                final_runoptions.behaviors[
-                    behaviour
-                ].network_settings.deterministic = argparse_args["deterministic"]
+                final_runoptions.behaviors[behaviour].network_settings.deterministic = (
+                    argparse_args["deterministic"]
+                )
 
         return final_runoptions
 

@@ -8,6 +8,7 @@ from mlagents.trainers.trainer.off_policy_trainer import OffPolicyTrainer
 from mlagents.trainers.optimizer.torch_optimizer import TorchOptimizer
 from mlagents.trainers.trajectory import Trajectory, ObsUtil
 from mlagents.trainers.behavior_id_utils import BehaviorIdentifiers
+from mlagents.trainers.policy.policy import Policy
 from mlagents_envs.base_env import BehaviorSpec
 from mlagents.trainers.settings import TrainerSettings
 from .dqn_optimizer import DQNOptimizer, DQNSettings, QNetwork
@@ -146,6 +147,14 @@ class DQNTrainer(OffPolicyTrainer):
         )
         self.maybe_load_replay_buffer()
         return policy
+
+    def get_policy(self, name_behavior_id: str) -> Policy:
+        """
+        Gets policy from trainer associated with name_behavior_id
+        :param name_behavior_id: full identifier of policy
+        """
+
+        return self.policy
 
     @staticmethod
     def get_settings_type():

@@ -355,9 +355,9 @@ class GhostTrainer(Trainer):
                 parsed_behavior_id, behavior_spec
             )
             self.trainer.add_policy(parsed_behavior_id, internal_trainer_policy)
-            self.current_policy_snapshot[
-                parsed_behavior_id.brain_name
-            ] = internal_trainer_policy.get_weights()
+            self.current_policy_snapshot[parsed_behavior_id.brain_name] = (
+                internal_trainer_policy.get_weights()
+            )
 
             policy.load_weights(internal_trainer_policy.get_weights())
             self._save_snapshot()  # Need to save after trainer initializes policy
@@ -381,6 +381,8 @@ class GhostTrainer(Trainer):
         :param parsed_behavior_id: Behavior ID that the policy should belong to.
         :param policy: Policy to associate with name_behavior_id.
         """
+        logger.error("Generating policy for {}.".format(parsed_behavior_id.behavior_id))
+
         name_behavior_id = parsed_behavior_id.behavior_id
         self._name_to_parsed_behavior_id[name_behavior_id] = parsed_behavior_id
         self.policies[name_behavior_id] = policy
@@ -450,9 +452,9 @@ class GhostTrainer(Trainer):
                 parsed_behavior_id.brain_name
             )
 
-            self._internal_policy_queues[
-                parsed_behavior_id.brain_name
-            ] = internal_policy_queue
+            self._internal_policy_queues[parsed_behavior_id.brain_name] = (
+                internal_policy_queue
+            )
             self.trainer.publish_policy_queue(internal_policy_queue)
 
     def subscribe_trajectory_queue(
@@ -470,11 +472,11 @@ class GhostTrainer(Trainer):
         ]
         if parsed_behavior_id.team_id == self.wrapped_trainer_team:
             # With a future multiagent trainer, this will be indexed by 'role'
-            internal_trajectory_queue: AgentManagerQueue[
-                Trajectory
-            ] = AgentManagerQueue(parsed_behavior_id.brain_name)
+            internal_trajectory_queue: AgentManagerQueue[Trajectory] = (
+                AgentManagerQueue(parsed_behavior_id.brain_name)
+            )
 
-            self._internal_trajectory_queues[
-                parsed_behavior_id.brain_name
-            ] = internal_trajectory_queue
+            self._internal_trajectory_queues[parsed_behavior_id.brain_name] = (
+                internal_trajectory_queue
+            )
             self.trainer.subscribe_trajectory_queue(internal_trajectory_queue)
