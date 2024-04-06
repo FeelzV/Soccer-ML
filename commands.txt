@@ -1,0 +1,13 @@
+//initial
+mlagents-learn config/poca/SoccerTwosInitial.yaml --run-id=defaultPoca --num-envs=10 --env=./Project/Builds/initial_build/UnityEnvironment.exe --time-scale=5
+
+//more layers
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=poca4layers --num-envs=10 --env=./Project/Builds/initial_build/UnityEnvironment.exe --time-scale=5
+
+
+//smaller alpha
+mlagents-learn config/poca/SoccerTwosSmallAlpha.yaml --run-id=pocaSmallAlpha --num-envs=10 --env=./Project/Builds/initial_build/UnityEnvironment.exe --time-scale=5
+
+
+//new reward for kick
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=pocaKickReward --num-envs=10 --env=./Project/Builds/build_reward_for_kick/UnityEnvironment.exe --time-scale=5
