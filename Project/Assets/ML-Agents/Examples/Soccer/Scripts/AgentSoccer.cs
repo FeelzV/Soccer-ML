@@ -245,7 +245,7 @@ public class AgentSoccer : Agent
             }
             else
             {
-                AddRewardKick(dir, m_purpleTeam);
+                AddRewardKick(dir, m_blueTeam);
             }
             
             c.gameObject.GetComponent<Rigidbody>().AddForce(dir * force);
