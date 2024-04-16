@@ -2,6 +2,8 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
+using System.Collections.Generic;
+
 
 public enum Team
 {
@@ -25,7 +27,9 @@ public class AgentSoccer : Agent
         Goalie,
         Generic
     }
-
+    public string purpleGoalTag; //will be used to check if collided with purple goal
+    public string blueGoalTag;
+    public int test;
     [HideInInspector]
     public Team team;
     float m_KickPower;
@@ -39,7 +43,15 @@ public class AgentSoccer : Agent
     float m_ForwardSpeed;
 
 
+    public GameObject m_blueGoal;
+    public GameObject m_purpleGoal;
     [HideInInspector]
+
+    public List<GameObject> m_agents;
+    public List<GameObject> m_blueTeam;
+    public List<GameObject> m_purpleTeam;
+
+
     public Rigidbody agentRb;
     SoccerSettings m_SoccerSettings;
     BehaviorParameters m_BehaviorParameters;
@@ -93,7 +105,30 @@ public class AgentSoccer : Agent
         agentRb.maxAngularVelocity = 500;
 
         m_ResetParams = Academy.Instance.EnvironmentParameters;
-    }
+
+        m_blueGoal = GameObject.FindWithTag(blueGoalTag);
+        m_purpleGoal = GameObject.FindWithTag(purpleGoalTag);
+        m_agents = new List<GameObject>();
+        foreach ( var item in envController.AgentsList)
+        {
+            m_agents.Add(item.Agent.gameObject);
+        }
+        m_blueTeam = new List<GameObject>();
+        m_purpleTeam = new List<GameObject>();
+        foreach (var item in m_agents)
+        {
+            var agentTeam = item.GetComponent<AgentSoccer>().team;
+            if (agentTeam == Team.Blue)
+            {
+                m_blueTeam.Add(item);
+            }           
+            else
+            {
+                m_purpleTeam.Add(item);
+            }
+        }
+
+}
 
     public void MoveAgent(ActionSegment<int> act)
     {
@@ -202,9 +237,17 @@ public class AgentSoccer : Agent
         }
         if (c.gameObject.CompareTag("ball"))
         {
-            AddReward(.2f * m_BallTouch);
             var dir = c.contacts[0].point - transform.position;
             dir = dir.normalized;
+            if (team == Team.Blue)
+            {
+                AddRewardKick(dir,m_purpleTeam, m_purpleGoal.transform.position);
+            }
+            else
+            {
+                AddRewardKick(dir, m_blueTeam, m_blueGoal.transform.position);
+            }
+            
             c.gameObject.GetComponent<Rigidbody>().AddForce(dir * force);
         }
     }
@@ -212,6 +255,45 @@ public class AgentSoccer : Agent
     public override void OnEpisodeBegin()
     {
         m_BallTouch = m_ResetParams.GetWithDefault("ball_touch", 0);
+    }
+
+    public void AddRewardKick(Vector3 dir, List<GameObject> agents, Vector3 goal_position)
+    {
+        //AddReward(0.2f * m_BallTouch);
+        List<float> reward_list = new List<float>();
+        int players_missed = 0;
+        foreach (var player in agents)
+        {
+            var dir_to_player = player.transform.position - transform.position;
+            dir_to_player = dir_to_player.normalized;
+        float dot_player = Vector3.Dot(dir_to_player, dir);
+            if (dot_player > 0.8)
+            {
+            reward_list.Add(-.05f);
+            }
+            else
+            {
+                players_missed++;
+            }
+        }
+
+        var dir_to_goal = goal_position - transform.position;
+        dir_to_goal = dir_to_goal.normalized;
+        float dot_goal = Vector3.Dot(dir_to_goal, dir);
+        if (dot_goal > 0)
+        {
+        reward_list.Add(dot_goal * .2f);
+        }
+
+        else
+        {
+        reward_list.Add(-.06f);
+        }
+
+        foreach (var reward in reward_list)
+        {
+            AddReward(reward * m_BallTouch);
+        }
     }
 
 }

@@ -1,0 +1,33 @@
+//initial
+mlagents-learn config/poca/SoccerTwosInitial.yaml --run-id=defaultPoca --num-envs=10 --env=./Project/Builds/initial_build/UnityEnvironment.exe --time-scale=5
+
+//more layers
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=poca4layers --num-envs=10 --env=./Project/Builds/initial_build/UnityEnvironment.exe --time-scale=5
+
+
+//smaller alpha
+mlagents-learn config/poca/SoccerTwosSmallAlpha.yaml --run-id=pocaSmallAlpha --num-envs=10 --env=./Project/Builds/initial_build/UnityEnvironment.exe --time-scale=5
+
+
+//new reward for kick
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=pocaKickReward --num-envs=10 --env=./Project/Builds/build_reward_for_kick/UnityEnvironment.exe --time-scale=5
+
+//new reward for kick fix teams
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=pocaKickRewardFix --num-envs=10 --env=./Project/Builds/build_reward_for_kick_fixed/UnityEnvironment.exe --time-scale=5
+
+
+//new reward for kick increased miss reward build_reward_for_kick_increased_miss_reward
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=pocaKickMissRewardIncrease --num-envs=10 --env=./Project/Builds/build_reward_for_kick_increased_miss_reward/UnityEnvironment.exe --time-scale=5
+
+
+//new reward for kick fix teams
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=pocaKickAngleFix --num-envs=10 --env=./Project/Builds/build_angle_fix/UnityEnvironment.exe --time-scale=5
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=pocaKickAngleFix --resume
+
+//no reward for kicks
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=pocaNoKickReward --num-envs=10 --env=./Project/Builds/build_no_kick_reward/UnityEnvironment.exe --time-scale=5
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=pocaNoKickReward --resume
+
+//final kick reward fix
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=pocaNewKickReward --num-envs=10 --env=./Project/Builds/new_kick/UnityEnvironment.exe --time-scale=10
+mlagents-learn config/poca/SoccerTwosHigherLayers.yaml --run-id=pocaNewKickReward --resume
