@@ -241,11 +241,11 @@ public class AgentSoccer : Agent
             dir = dir.normalized;
             if (team == Team.Blue)
             {
-                AddRewardKick(dir,m_purpleTeam);
+                AddRewardKick(dir,m_purpleTeam, m_purpleGoal.transform.position);
             }
             else
             {
-                AddRewardKick(dir, m_blueTeam);
+                AddRewardKick(dir, m_blueTeam, m_blueGoal.transform.position);
             }
             
             c.gameObject.GetComponent<Rigidbody>().AddForce(dir * force);
@@ -257,8 +257,9 @@ public class AgentSoccer : Agent
         m_BallTouch = m_ResetParams.GetWithDefault("ball_touch", 0);
     }
 
-    public void AddRewardKick(Vector3 dir, List<GameObject> agents)
+    public void AddRewardKick(Vector3 dir, List<GameObject> agents, Vector3 goal_position)
     {
+        //AddReward(0.2f * m_BallTouch);
         List<float> reward_list = new List<float>();
         int players_missed = 0;
         foreach (var player in agents)
@@ -276,27 +277,23 @@ public class AgentSoccer : Agent
             }
         }
 
-        var dir_to_goal = m_purpleGoal.transform.position - transform.position;
+        var dir_to_goal = goal_position - transform.position;
         dir_to_goal = dir_to_goal.normalized;
         float dot_goal = Vector3.Dot(dir_to_goal, dir);
-        if (dot_goal < 0 && players_missed == agents.Count)
-        {
-        reward_list.Add(.15f);
-        }
-
-        if(dot_goal < 0 )
-        {
-        reward_list.Add(-.06f);
-        }
-        else
+        if (dot_goal > 0)
         {
         reward_list.Add(dot_goal * .2f);
         }
 
+        else
+        {
+        reward_list.Add(-.06f);
+        }
+
         foreach (var reward in reward_list)
-    {
-        AddReward(reward * m_BallTouch);
-    }
+        {
+            AddReward(reward * m_BallTouch);
+        }
     }
 
 }
