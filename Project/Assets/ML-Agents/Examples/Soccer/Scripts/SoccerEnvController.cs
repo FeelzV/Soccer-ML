@@ -100,13 +100,37 @@ public class SoccerEnvController : MonoBehaviour
     {
         if (scoredTeam == Team.Blue)
         {
-            m_BlueAgentGroup.AddGroupReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
-            m_PurpleAgentGroup.AddGroupReward(-1);
+            //m_BlueAgentGroup.AddGroupReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
+            //m_PurpleAgentGroup.AddGroupReward(-1);
+            foreach (var item in AgentsList)
+            {
+                if (item.Agent.team == Team.Blue)
+                {
+                    item.Agent.AddReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
+                }
+                else
+                {
+                    item.Agent.AddReward(-1);
+                }
+                item.Agent.EndEpisode();
+            }
         }
         else
         {
-            m_PurpleAgentGroup.AddGroupReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
-            m_BlueAgentGroup.AddGroupReward(-1);
+            //m_PurpleAgentGroup.AddGroupReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
+            //m_BlueAgentGroup.AddGroupReward(-1);
+            foreach (var item in AgentsList)
+            {
+                if (item.Agent.team == Team.Purple)
+                {
+                    item.Agent.AddReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
+                }
+                else
+                {
+                    item.Agent.AddReward(-1);
+                }
+                item.Agent.EndEpisode();
+            }
         }
         m_PurpleAgentGroup.EndGroupEpisode();
         m_BlueAgentGroup.EndGroupEpisode();
